@@ -1,0 +1,2008 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KrishiAI — Smart Farming Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --g-deep:   #1E3A0A;
+  --g-dark:   #2D5016;
+  --g-mid:    #4A7C1F;
+  --g-bright: #6B9B37;
+  --g-light:  #A8D06B;
+  --g-pale:   #D6EDAF;
+  --g-tint:   #F0F8E4;
+
+  --b-dark:   #3E2005;
+  --b-mid:    #7B4A1E;
+  --b-warm:   #A0622A;
+  --b-sand:   #D4A96A;
+  --b-cream:  #F5ECD8;
+  --b-off:    #FDFAF3;
+
+  --gold:     #C99010;
+  --gold-lt:  #F2C050;
+  --gold-pale:#FDF3D4;
+
+  --sky:      #2C6FAC;
+  --rain:     #1A4F8C;
+
+  --txt-1:    #1A1A0A;
+  --txt-2:    #4A4A2A;
+  --txt-3:    #8A8A6A;
+  --divider:  #E8E4D8;
+  --surface:  #FFFFFF;
+  --bg:       #FAF8F3;
+
+  --radius-sm:  8px;
+  --radius-md:  16px;
+  --radius-lg:  24px;
+  --radius-xl:  32px;
+  --radius-full:999px;
+
+  --shadow-sm:  0 2px 8px rgba(45,80,22,.08);
+  --shadow-md:  0 4px 20px rgba(45,80,22,.12);
+  --shadow-lg:  0 8px 40px rgba(45,80,22,.18);
+
+  --transition: 0.22s cubic-bezier(.4,0,.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  font-family: 'Sora', sans-serif;
+  background: var(--bg);
+  color: var(--txt-1);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── PAGES ─── */
+.page { display: none; min-height: 100vh; }
+.page.active { display: flex; flex-direction: column; }
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 5vw;
+  height: 68px;
+  background: rgba(253,250,243,.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--divider);
+  transition: box-shadow var(--transition);
+}
+nav.scrolled { box-shadow: var(--shadow-sm); }
+
+.nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.nav-logo-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--g-mid), var(--g-bright));
+  display: grid; place-items: center;
+  font-size: 18px;
+}
+.nav-logo-text { font-size: 19px; font-weight: 700; color: var(--g-deep); letter-spacing: -.3px; }
+
+.nav-cta {
+  background: var(--g-mid);
+  color: #fff;
+  border: none; cursor: pointer;
+  padding: 9px 22px;
+  border-radius: var(--radius-full);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px; font-weight: 600;
+  transition: background var(--transition), transform var(--transition);
+}
+.nav-cta:hover { background: var(--g-dark); transform: translateY(-1px); }
+
+/* ─── HERO ─── */
+.hero {
+  padding: 140px 5vw 80px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--gold-pale); color: var(--gold);
+  border: 1px solid rgba(201,144,16,.3);
+  padding: 6px 14px; border-radius: var(--radius-full);
+  font-size: 12px; font-weight: 600;
+  letter-spacing: .5px; margin-bottom: 20px;
+  text-transform: uppercase;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--gold); animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .5; transform: scale(1.3); }
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 4vw, 3.4rem);
+  font-weight: 700; line-height: 1.15;
+  color: var(--g-deep); margin-bottom: 20px;
+  letter-spacing: -.5px;
+}
+.hero h1 span { color: var(--g-mid); }
+
+.hero-sub {
+  font-size: 1.05rem; color: var(--txt-2);
+  line-height: 1.7; margin-bottom: 36px;
+  font-weight: 400;
+}
+
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--g-mid), var(--g-bright));
+  color: #fff; border: none; cursor: pointer;
+  padding: 14px 32px; border-radius: var(--radius-lg);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  transition: all var(--transition);
+  box-shadow: 0 4px 16px rgba(74,124,31,.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,124,31,.35); }
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--g-dark); border: 2px solid var(--g-pale);
+  cursor: pointer; padding: 12px 28px; border-radius: var(--radius-lg);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  transition: all var(--transition);
+}
+.btn-secondary:hover { border-color: var(--g-mid); background: var(--g-tint); }
+
+.hero-stats {
+  display: flex; gap: 28px; margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--divider);
+}
+.stat-item { text-align: left; }
+.stat-num { font-size: 1.7rem; font-weight: 700; color: var(--g-mid); }
+.stat-lbl { font-size: 12px; color: var(--txt-3); font-weight: 500; }
+
+/* Hero illustration card */
+.hero-visual {
+  background: var(--surface);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--divider);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  position: relative;
+}
+.hero-card-header {
+  background: linear-gradient(135deg, var(--g-deep), var(--g-dark));
+  padding: 20px 24px;
+  display: flex; align-items: center; gap: 12px;
+}
+.hero-card-avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  display: grid; place-items: center; font-size: 20px;
+}
+.hero-card-name { color: #fff; font-weight: 600; font-size: 15px; }
+.hero-card-role { color: rgba(255,255,255,.65); font-size: 12px; }
+
+.hero-card-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
+
+.mini-card {
+  background: var(--bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--divider);
+  padding: 14px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.mini-card-icon {
+  width: 40px; height: 40px; border-radius: var(--radius-sm);
+  display: grid; place-items: center; font-size: 18px; flex-shrink: 0;
+}
+.mini-card-icon.green  { background: var(--g-tint); }
+.mini-card-icon.blue   { background: #E8F4FD; }
+.mini-card-icon.gold   { background: var(--gold-pale); }
+.mini-card-label { font-size: 11px; color: var(--txt-3); font-weight: 500; margin-bottom: 2px; }
+.mini-card-value { font-size: 14px; font-weight: 600; color: var(--txt-1); }
+
+.mini-badge {
+  margin-left: auto; padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px; font-weight: 600;
+  flex-shrink: 0;
+}
+.badge-good { background: var(--g-tint); color: var(--g-mid); }
+.badge-warn { background: var(--gold-pale); color: var(--gold); }
+
+/* ─── FEATURES SECTION ─── */
+.section {
+  padding: 80px 5vw;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+.section-label {
+  font-size: 12px; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--g-mid);
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 700; color: var(--g-deep);
+  margin-bottom: 14px; letter-spacing: -.3px;
+}
+.section-sub { font-size: 1rem; color: var(--txt-2); max-width: 520px; line-height: 1.7; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 48px;
+}
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-lg);
+  padding: 28px 24px;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  cursor: default;
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--g-pale);
+}
+.feature-icon {
+  width: 52px; height: 52px; border-radius: var(--radius-md);
+  display: grid; place-items: center;
+  font-size: 22px; margin-bottom: 18px;
+}
+.feature-card h3 { font-size: 16px; font-weight: 600; color: var(--txt-1); margin-bottom: 8px; }
+.feature-card p { font-size: 13.5px; color: var(--txt-2); line-height: 1.65; }
+
+/* ─── FOOTER STRIP ─── */
+.footer-strip {
+  background: var(--g-deep);
+  color: rgba(255,255,255,.7);
+  text-align: center;
+  padding: 24px 5vw;
+  font-size: 13px;
+}
+.footer-strip span { color: var(--g-pale); font-weight: 600; }
+
+/* ─── AUTH PAGE ─── */
+.auth-wrap {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.auth-left {
+  background: linear-gradient(160deg, var(--g-deep), var(--g-dark) 60%, var(--g-mid));
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 60px 8vw;
+  position: relative; overflow: hidden;
+}
+.auth-left::before {
+  content: '';
+  position: absolute; top: -80px; right: -80px;
+  width: 320px; height: 320px; border-radius: 50%;
+  background: rgba(255,255,255,.04);
+}
+.auth-left::after {
+  content: '';
+  position: absolute; bottom: -60px; left: -60px;
+  width: 240px; height: 240px; border-radius: 50%;
+  background: rgba(255,255,255,.03);
+}
+.auth-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 48px; }
+.auth-brand-icon {
+  width: 46px; height: 46px; border-radius: 12px;
+  background: rgba(255,255,255,.18);
+  display: grid; place-items: center; font-size: 22px;
+}
+.auth-brand-name { font-size: 22px; font-weight: 700; color: #fff; }
+
+.auth-quote { font-size: 1.8rem; font-weight: 700; color: #fff; line-height: 1.3; margin-bottom: 16px; }
+.auth-quote-sub { color: rgba(255,255,255,.6); font-size: 14px; line-height: 1.7; }
+.auth-features { margin-top: 40px; display: flex; flex-direction: column; gap: 14px; }
+.auth-feat {
+  display: flex; align-items: center; gap: 12px;
+  color: rgba(255,255,255,.85); font-size: 14px;
+}
+.auth-feat-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--g-light); flex-shrink: 0;
+}
+
+.auth-right {
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  padding: 60px 6vw;
+}
+.auth-box { width: 100%; max-width: 400px; }
+
+.auth-tabs {
+  display: flex; gap: 0;
+  background: var(--divider);
+  border-radius: var(--radius-full);
+  padding: 4px;
+  margin-bottom: 32px;
+}
+.auth-tab {
+  flex: 1; padding: 10px;
+  border: none; background: none; cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px; font-weight: 600;
+  color: var(--txt-3); border-radius: var(--radius-full);
+  transition: all var(--transition);
+}
+.auth-tab.active {
+  background: var(--surface);
+  color: var(--g-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-title { font-size: 1.6rem; font-weight: 700; color: var(--g-deep); margin-bottom: 6px; }
+.auth-sub { font-size: 13px; color: var(--txt-3); margin-bottom: 28px; }
+
+.field-group { display: flex; flex-direction: column; gap: 16px; margin-bottom: 24px; }
+
+.field-wrap { display: flex; flex-direction: column; gap: 6px; }
+.field-label { font-size: 13px; font-weight: 600; color: var(--txt-2); }
+.field-inner { position: relative; }
+.field-icon {
+  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+  font-size: 16px; line-height: 1;
+}
+.field-input {
+  width: 100%;
+  padding: 13px 14px 13px 42px;
+  border: 1.5px solid var(--divider);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px; color: var(--txt-1);
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+}
+.field-input::placeholder { color: var(--txt-3); }
+.field-input:focus {
+  border-color: var(--g-mid);
+  box-shadow: 0 0 0 3px rgba(74,124,31,.12);
+}
+.field-input.error { border-color: #C0392B; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+.btn-full {
+  width: 100%;
+  background: linear-gradient(135deg, var(--g-mid), var(--g-bright));
+  color: #fff; border: none; cursor: pointer;
+  padding: 15px;
+  border-radius: var(--radius-lg);
+  font-family: 'Sora', sans-serif;
+  font-size: 15px; font-weight: 600;
+  transition: all var(--transition);
+  box-shadow: 0 4px 16px rgba(74,124,31,.28);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-full:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,124,31,.35); }
+.btn-full:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+.error-msg {
+  background: #FEF0EE; border: 1px solid rgba(192,57,43,.3);
+  color: #C0392B;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px; margin-top: 12px;
+  display: none;
+}
+.error-msg.show { display: block; }
+
+/* spinner */
+.spinner {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2.5px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  animation: spin .7s linear infinite;
+  display: none;
+}
+.spinner.active { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── ONBOARDING STEPS ─── */
+.onboard-wrap {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  background: var(--bg);
+}
+.onboard-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--divider);
+  padding: 18px 5vw;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.onboard-logo { display: flex; align-items: center; gap: 10px; }
+.onboard-logo-icon {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: linear-gradient(135deg, var(--g-mid), var(--g-bright));
+  display: grid; place-items: center; font-size: 17px;
+}
+.onboard-logo-text { font-size: 17px; font-weight: 700; color: var(--g-deep); }
+.step-indicator { display: flex; align-items: center; gap: 8px; }
+.step-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--divider); transition: background var(--transition);
+}
+.step-dot.active { background: var(--g-mid); width: 24px; border-radius: var(--radius-full); }
+.step-dot.done { background: var(--g-light); }
+
+.onboard-body {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  justify-content: flex-start;
+  padding: 48px 5vw;
+}
+.onboard-step { width: 100%; max-width: 640px; display: none; }
+.onboard-step.active { display: block; }
+
+.onboard-title { font-size: 1.8rem; font-weight: 700; color: var(--g-deep); margin-bottom: 8px; }
+.onboard-sub { font-size: 14px; color: var(--txt-2); margin-bottom: 36px; line-height: 1.6; }
+
+/* Language grid */
+.lang-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.lang-card {
+  background: var(--surface);
+  border: 2px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 18px 14px;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition);
+  position: relative;
+}
+.lang-card:hover { border-color: var(--g-pale); background: var(--g-tint); }
+.lang-card.selected { border-color: var(--g-mid); background: var(--g-tint); }
+.lang-card.selected::after {
+  content: '✓';
+  position: absolute; top: 8px; right: 10px;
+  font-size: 12px; font-weight: 700; color: var(--g-mid);
+}
+.lang-native { font-size: 18px; font-weight: 600; color: var(--txt-1); margin-bottom: 4px; }
+.lang-name { font-size: 11px; color: var(--txt-3); font-weight: 500; }
+
+/* Crop grid */
+.crop-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.crop-card {
+  background: var(--surface);
+  border: 2px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 16px 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: all var(--transition);
+  position: relative;
+}
+.crop-card:hover { border-color: var(--g-pale); }
+.crop-card.selected { border-color: var(--g-mid); background: var(--g-tint); }
+.crop-card.selected::after {
+  content: '✓';
+  position: absolute; top: 6px; right: 8px;
+  font-size: 11px; font-weight: 700; color: var(--g-mid);
+}
+.crop-emoji { font-size: 28px; margin-bottom: 8px; }
+.crop-name { font-size: 12px; font-weight: 600; color: var(--txt-2); }
+
+/* Location card */
+.location-card {
+  background: var(--surface);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+.location-icon { font-size: 48px; margin-bottom: 16px; }
+.location-title { font-size: 18px; font-weight: 600; color: var(--txt-1); margin-bottom: 8px; }
+.location-desc { font-size: 13.5px; color: var(--txt-2); line-height: 1.65; margin-bottom: 24px; }
+.btn-location {
+  background: linear-gradient(135deg, var(--sky), #3A7FD5);
+  color: #fff; border: none; cursor: pointer;
+  padding: 13px 28px;
+  border-radius: var(--radius-full);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 8px;
+  transition: all var(--transition);
+}
+.btn-location:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(44,111,172,.3); }
+.location-status {
+  margin-top: 14px; font-size: 13px; color: var(--txt-3);
+  min-height: 20px;
+}
+.location-status.got { color: var(--g-mid); font-weight: 600; }
+
+.onboard-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--divider);
+}
+.btn-back {
+  background: none; border: none; cursor: pointer;
+  font-family: 'Sora', sans-serif;
+  font-size: 14px; font-weight: 600;
+  color: var(--txt-3);
+  padding: 10px 0;
+  transition: color var(--transition);
+}
+.btn-back:hover { color: var(--txt-2); }
+.btn-next {
+  background: linear-gradient(135deg, var(--g-mid), var(--g-bright));
+  color: #fff; border: none; cursor: pointer;
+  padding: 13px 32px;
+  border-radius: var(--radius-full);
+  font-family: 'Sora', sans-serif;
+  font-size: 14px; font-weight: 600;
+  display: flex; align-items: center; gap: 8px;
+  transition: all var(--transition);
+  box-shadow: 0 4px 14px rgba(74,124,31,.28);
+}
+.btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(74,124,31,.35); }
+.btn-next:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* ─── DASHBOARD ─── */
+.dash-wrap { min-height: 100vh; display: flex; flex-direction: column; }
+
+.dash-nav {
+  background: var(--g-deep);
+  padding: 0 5vw;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 50;
+}
+.dash-logo { display: flex; align-items: center; gap: 10px; }
+.dash-logo-icon {
+  width: 36px; height: 36px; border-radius: 9px;
+  background: rgba(255,255,255,.15);
+  display: grid; place-items: center; font-size: 17px;
+}
+.dash-logo-text { font-size: 17px; font-weight: 700; color: #fff; }
+
+.dash-nav-right { display: flex; align-items: center; gap: 16px; }
+.dash-crop-pill {
+  background: rgba(255,255,255,.12);
+  color: rgba(255,255,255,.85);
+  border: 1px solid rgba(255,255,255,.2);
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 12px; font-weight: 600;
+}
+.dash-user {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--g-mid);
+  display: grid; place-items: center;
+  font-size: 14px; font-weight: 700; color: #fff;
+  cursor: pointer;
+}
+
+.dash-body {
+  flex: 1;
+  background: var(--bg);
+  padding: 32px 5vw 60px;
+}
+
+/* Greeting strip */
+.greeting-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 28px;
+}
+.greeting-title { font-size: 1.5rem; font-weight: 700; color: var(--g-deep); }
+.greeting-sub { font-size: 13px; color: var(--txt-3); margin-top: 4px; }
+.greeting-tag {
+  background: var(--gold-pale); color: var(--gold);
+  border: 1px solid rgba(201,144,16,.3);
+  padding: 6px 14px; border-radius: var(--radius-full);
+  font-size: 12px; font-weight: 600;
+}
+
+/* Offline banner */
+.offline-banner {
+  background: #FEF3CD; border: 1px solid #F9D56E;
+  color: #8a6000;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 20px;
+  display: none;
+  align-items: center; gap: 8px;
+}
+.offline-banner.show { display: flex; }
+
+/* Dashboard grid */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+}
+.dash-col { display: flex; flex-direction: column; gap: 20px; }
+
+/* Cards */
+.d-card {
+  background: var(--surface);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow var(--transition);
+}
+.d-card:hover { box-shadow: var(--shadow-sm); }
+
+.d-card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--divider);
+}
+.d-card-title {
+  font-size: 13px; font-weight: 600;
+  color: var(--txt-3); text-transform: uppercase; letter-spacing: .8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.d-card-icon { font-size: 16px; }
+.d-card-badge {
+  font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: var(--radius-full);
+}
+.badge-live { background: #E8F8E8; color: var(--g-mid); }
+.badge-ai   { background: var(--gold-pale); color: var(--gold); }
+
+.d-card-body { padding: 20px; }
+
+/* WEATHER CARD */
+.weather-main {
+  background: linear-gradient(135deg, #1A4F9C, #2C6FAC);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  color: #fff;
+  position: relative; overflow: hidden;
+}
+.weather-main::before {
+  content: '';
+  position: absolute; top: -40px; right: -40px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: rgba(255,255,255,.06);
+}
+.weather-main::after {
+  content: '';
+  position: absolute; bottom: -30px; left: -30px;
+  width: 120px; height: 120px; border-radius: 50%;
+  background: rgba(255,255,255,.04);
+}
+.weather-location {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: rgba(255,255,255,.7);
+  margin-bottom: 16px;
+}
+.weather-top { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 20px; }
+.weather-temp { font-size: 3.5rem; font-weight: 700; line-height: 1; }
+.weather-temp-unit { font-size: 1.2rem; font-weight: 400; opacity: .7; }
+.weather-info { padding-top: 8px; }
+.weather-desc { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+.weather-feels { font-size: 12px; opacity: .7; }
+.weather-emoji { font-size: 3rem; margin-left: auto; }
+
+.weather-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid rgba(255,255,255,.15);
+  padding-top: 16px;
+}
+.w-stat { text-align: center; }
+.w-stat + .w-stat { border-left: 1px solid rgba(255,255,255,.12); }
+.w-stat-val { font-size: 15px; font-weight: 600; }
+.w-stat-lbl { font-size: 10px; opacity: .6; margin-top: 2px; }
+
+.weather-loading {
+  display: flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 32px; color: var(--txt-3); font-size: 14px;
+  flex-direction: column;
+}
+
+/* Forecast strip */
+.forecast-strip {
+  display: flex; gap: 10px; overflow-x: auto;
+  padding: 0 20px 20px;
+  scrollbar-width: none;
+}
+.forecast-strip::-webkit-scrollbar { display: none; }
+.forecast-pill {
+  background: var(--bg);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  text-align: center;
+  flex-shrink: 0; min-width: 72px;
+  cursor: default;
+}
+.forecast-pill.today {
+  background: var(--g-tint); border-color: var(--g-pale);
+}
+.forecast-day { font-size: 10px; font-weight: 600; color: var(--txt-3); text-transform: uppercase; }
+.forecast-emoji { font-size: 18px; margin: 6px 0; }
+.forecast-temp { font-size: 13px; font-weight: 600; color: var(--txt-1); }
+.forecast-rain { font-size: 10px; color: var(--sky); }
+
+/* IRRIGATION ADVISORY */
+.irr-card {
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  position: relative; overflow: hidden;
+}
+.irr-card.yes {
+  background: linear-gradient(135deg, var(--g-tint), #D8EEB8);
+  border: 2px solid var(--g-pale);
+}
+.irr-card.no {
+  background: linear-gradient(135deg, #FEF9E7, #FDF3D4);
+  border: 2px solid rgba(201,144,16,.3);
+}
+.irr-icon { font-size: 36px; margin-bottom: 12px; }
+.irr-verdict { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+.irr-card.yes .irr-verdict { color: var(--g-dark); }
+.irr-card.no  .irr-verdict { color: var(--gold); }
+.irr-reason { font-size: 13px; line-height: 1.6; }
+.irr-card.yes .irr-reason { color: var(--g-mid); }
+.irr-card.no  .irr-reason { color: #8a6000; }
+.irr-savings {
+  margin-top: 14px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600;
+  padding: 8px 12px; border-radius: var(--radius-sm);
+  background: rgba(255,255,255,.6);
+  width: fit-content;
+}
+
+/* Soil mini */
+.soil-strip {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+}
+.soil-item {
+  background: var(--bg);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 14px;
+}
+.soil-label { font-size: 11px; color: var(--txt-3); font-weight: 500; margin-bottom: 6px; }
+.soil-bar-wrap { height: 6px; background: var(--divider); border-radius: var(--radius-full); overflow: hidden; margin-bottom: 6px; }
+.soil-bar { height: 100%; border-radius: var(--radius-full); transition: width .8s ease; }
+.soil-bar.moisture { background: linear-gradient(90deg, var(--sky), #5AA8E0); }
+.soil-bar.temp     { background: linear-gradient(90deg, var(--g-mid), var(--g-bright)); }
+.soil-bar.n        { background: linear-gradient(90deg, #8B6B35, #C4963E); }
+.soil-bar.ph       { background: linear-gradient(90deg, #7B4A9C, #A876CC); }
+.soil-val { font-size: 14px; font-weight: 700; color: var(--txt-1); }
+.soil-unit { font-size: 11px; color: var(--txt-3); }
+
+/* Quick actions */
+.quick-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.qa-btn {
+  background: var(--surface);
+  border: 1px solid var(--divider);
+  border-radius: var(--radius-md);
+  padding: 18px 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: all var(--transition);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.qa-btn:hover { border-color: var(--g-pale); background: var(--g-tint); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+.qa-icon { font-size: 24px; }
+.qa-label { font-size: 13px; font-weight: 600; color: var(--txt-1); }
+.qa-sub { font-size: 11px; color: var(--txt-3); }
+
+/* AI Advisory box */
+.advisory-box {
+  background: linear-gradient(135deg, var(--g-deep), var(--g-dark));
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  color: #fff;
+}
+.advisory-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.advisory-badge {
+  background: rgba(255,255,255,.15); padding: 4px 10px;
+  border-radius: var(--radius-full); font-size: 11px; font-weight: 600;
+  color: var(--g-pale); border: 1px solid rgba(255,255,255,.2);
+}
+.advisory-text { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,.85); margin-bottom: 16px; }
+.advisory-btn {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.2);
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: var(--radius-full);
+  font-family: 'Sora', sans-serif;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.advisory-btn:hover { background: rgba(255,255,255,.2); }
+
+/* Loading skeleton */
+.skel {
+  background: linear-gradient(90deg, var(--divider) 25%, #EEEAD8 50%, var(--divider) 75%);
+  background-size: 200% 100%;
+  animation: skel-anim 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes skel-anim { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; text-align: center; gap: 40px; }
+  .hero-actions { justify-content: center; }
+  .hero-stats { justify-content: center; }
+  .hero-visual { max-width: 420px; margin: 0 auto; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .auth-wrap { grid-template-columns: 1fr; }
+  .auth-left { display: none; }
+  .auth-right { padding: 40px 5vw; }
+  .lang-grid { grid-template-columns: repeat(2, 1fr); }
+  .crop-grid { grid-template-columns: repeat(3, 1fr); }
+  .dash-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .features-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 2rem; }
+  .lang-grid { grid-template-columns: repeat(2, 1fr); }
+  .crop-grid { grid-template-columns: repeat(2, 1fr); }
+  .quick-actions { grid-template-columns: 1fr; }
+  .soil-strip { grid-template-columns: 1fr 1fr; }
+  .weather-stats { grid-template-columns: repeat(3, 1fr); }
+  .onboard-title { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     PAGE 1: LANDING
+═══════════════════════════════════════════ -->
+<div id="page-landing" class="page active">
+
+  <nav id="mainNav">
+    <a class="nav-logo" href="#">
+      <div class="nav-logo-icon">🌾</div>
+      <span class="nav-logo-text">KrishiAI</span>
+    </a>
+    <button class="nav-cta" onclick="showAuth()">Login / Sign Up</button>
+  </nav>
+
+  <!-- Hero -->
+  <section style="background:var(--bg);">
+    <div class="hero">
+      <div>
+        <div class="hero-badge">
+          <div class="hero-badge-dot"></div>
+          AI-Powered Farming
+        </div>
+        <h1>Smart farming for every <span>Indian farmer</span></h1>
+        <p class="hero-sub">
+          Get real-time crop advice, weather-based irrigation guidance, and disease diagnosis — all in your local language. Built for India's 140 million smallholder farmers.
+        </p>
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="showAuth()">
+            🌱 Start Farming Smart
+          </button>
+          <button class="btn-secondary">
+            ▶ See How It Works
+          </button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num">12+</div>
+            <div class="stat-lbl">Languages</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">50+</div>
+            <div class="stat-lbl">Diseases detected</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">600L</div>
+            <div class="stat-lbl">Water saved / event</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero visual card -->
+      <div class="hero-visual">
+        <div class="hero-card-header">
+          <div class="hero-card-avatar">👨‍🌾</div>
+          <div>
+            <div class="hero-card-name">Ramesh Kumar</div>
+            <div class="hero-card-role">Wheat Farmer · Punjab</div>
+          </div>
+        </div>
+        <div class="hero-card-body">
+          <div class="mini-card">
+            <div class="mini-card-icon blue">🌤️</div>
+            <div>
+              <div class="mini-card-label">Today's Weather</div>
+              <div class="mini-card-value">32°C · Partly Cloudy</div>
+            </div>
+            <div class="mini-badge badge-good">Normal</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon green">💧</div>
+            <div>
+              <div class="mini-card-label">Irrigation Advisory</div>
+              <div class="mini-card-value">Skip today — rain coming</div>
+            </div>
+            <div class="mini-badge badge-warn">Save water</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-card-icon gold">🌾</div>
+            <div>
+              <div class="mini-card-label">Yield Forecast</div>
+              <div class="mini-card-value">12.5 quintals expected</div>
+            </div>
+            <div class="mini-badge badge-good">↑ 12%</div>
+          </div>
+          <div style="background:var(--g-tint);border-radius:var(--radius-md);padding:14px 16px;border:1px solid var(--g-pale);">
+            <div style="font-size:11px;color:var(--g-mid);font-weight:600;margin-bottom:6px;">🤖 AI ADVISORY</div>
+            <div style="font-size:13px;color:var(--g-dark);line-height:1.55;">Rain expected tomorrow. Hold irrigation 2 days. Check NPK — nitrogen slightly low, consider urea application.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section style="background:var(--surface); border-top:1px solid var(--divider);">
+    <div class="section">
+      <div class="section-label">What KrishiAI does</div>
+      <h2 class="section-title">Everything a farmer needs, in one place</h2>
+      <p class="section-sub">From disease detection to market prices — powered by satellite data, AI, and real-time sensors.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#E8F4FD;">🌦️</div>
+          <h3>Weather & Irrigation</h3>
+          <p>Location-based 7-day forecasts with AI-driven irrigation advice. Know exactly when and how much to water.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--g-tint);">🔬</div>
+          <h3>Disease Diagnosis</h3>
+          <p>Photograph a leaf — our AI detects 50+ diseases with 85%+ confidence and gives instant treatment steps.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--gold-pale);">📈</div>
+          <h3>Mandi Prices</h3>
+          <p>Live commodity prices from nearby mandis. Always know the best place to sell your harvest.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#F3E8FD;">🎤</div>
+          <h3>Voice in Your Language</h3>
+          <p>Speak in Hindi, Marwadi, Punjabi, Tamil — get answers in your own language, with or without reading.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:var(--g-tint);">📡</div>
+          <h3>Satellite Data</h3>
+          <p>ISRO RESOURCESAT NDVI data updated every 18 minutes replaces expensive agronomist visits.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon" style="background:#FEE8E8;">📴</div>
+          <h3>Works Offline</h3>
+          <p>Cached advisory and alerts available without internet. Sync automatically when connectivity returns.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA strip -->
+  <section style="background:linear-gradient(135deg,var(--g-deep),var(--g-dark));padding:64px 5vw;text-align:center;">
+    <div style="max-width:560px;margin:0 auto;">
+      <div style="font-size:2rem;margin-bottom:16px;">🌾</div>
+      <h2 style="font-size:1.9rem;font-weight:700;color:#fff;margin-bottom:12px;">Ready to farm smarter?</h2>
+      <p style="color:rgba(255,255,255,.65);font-size:14px;margin-bottom:28px;line-height:1.7;">Join thousands of farmers already using KrishiAI. Free to start, always farmer-first.</p>
+      <button class="btn-primary" onclick="showAuth()" style="margin:0 auto;">
+        🌱 Create Free Account
+      </button>
+    </div>
+  </section>
+
+  <div class="footer-strip">
+    Made with ❤️ for Indian farmers &nbsp;·&nbsp; <span>KrishiAI</span> &nbsp;·&nbsp; Team Syntax And Chill
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 2: AUTH (Login / Register)
+═══════════════════════════════════════════ -->
+<div id="page-auth" class="page">
+  <div class="auth-wrap">
+    <!-- Left panel -->
+    <div class="auth-left">
+      <div class="auth-brand">
+        <div class="auth-brand-icon">🌾</div>
+        <span class="auth-brand-name">KrishiAI</span>
+      </div>
+      <div class="auth-quote">Your farm's intelligent companion</div>
+      <div class="auth-quote-sub">Join 140 million Indian farmers getting smarter about their land, their crops, and their future.</div>
+      <div class="auth-features">
+        <div class="auth-feat"><div class="auth-feat-dot"></div>AI-powered crop disease detection</div>
+        <div class="auth-feat"><div class="auth-feat-dot"></div>Real-time weather & irrigation advice</div>
+        <div class="auth-feat"><div class="auth-feat-dot"></div>Live mandi prices near you</div>
+        <div class="auth-feat"><div class="auth-feat-dot"></div>Works in 12+ Indian languages</div>
+      </div>
+    </div>
+
+    <!-- Right panel - form -->
+    <div class="auth-right">
+      <div class="auth-box">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;">
+          <div style="font-size:22px;font-weight:700;color:var(--g-deep);">Welcome 👋</div>
+          <button onclick="showPage('page-landing')" style="background:none;border:none;cursor:pointer;color:var(--txt-3);font-size:13px;font-weight:600;">← Back</button>
+        </div>
+
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Login</button>
+          <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Register</button>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <div id="form-login">
+          <p class="auth-sub">Enter your phone number and password</p>
+          <div class="field-group">
+            <div class="field-wrap">
+              <label class="field-label">Phone Number</label>
+              <div class="field-inner">
+                <span class="field-icon">📱</span>
+                <input class="field-input" id="login-phone" type="tel" maxlength="10" placeholder="10-digit number">
+              </div>
+            </div>
+            <div class="field-wrap">
+              <label class="field-label">Password</label>
+              <div class="field-inner">
+                <span class="field-icon">🔒</span>
+                <input class="field-input" id="login-pass" type="password" placeholder="Your password">
+              </div>
+            </div>
+          </div>
+          <button class="btn-full" id="btn-login" onclick="doLogin()">
+            <span id="login-txt">Login to KrishiAI</span>
+            <div class="spinner" id="login-spin"></div>
+          </button>
+          <div class="error-msg" id="login-err"></div>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <div id="form-register" style="display:none;">
+          <p class="auth-sub">Create your farmer account in seconds</p>
+          <div class="field-group">
+            <div class="field-wrap">
+              <label class="field-label">Full Name</label>
+              <div class="field-inner">
+                <span class="field-icon">👤</span>
+                <input class="field-input" id="reg-name" type="text" placeholder="Your name">
+              </div>
+            </div>
+            <div class="field-wrap">
+              <label class="field-label">Phone Number</label>
+              <div class="field-inner">
+                <span class="field-icon">📱</span>
+                <input class="field-input" id="reg-phone" type="tel" maxlength="10" placeholder="10-digit number">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field-wrap">
+                <label class="field-label">State</label>
+                <div class="field-inner">
+                  <span class="field-icon">📍</span>
+                  <input class="field-input" id="reg-state" type="text" placeholder="e.g. Punjab" style="padding-left:42px;">
+                </div>
+              </div>
+              <div class="field-wrap">
+                <label class="field-label">District</label>
+                <div class="field-inner">
+                  <span class="field-icon">🏘️</span>
+                  <input class="field-input" id="reg-district" type="text" placeholder="e.g. Ludhiana" style="padding-left:42px;">
+                </div>
+              </div>
+            </div>
+            <div class="field-wrap">
+              <label class="field-label">Farm Size (hectares)</label>
+              <div class="field-inner">
+                <span class="field-icon">🌿</span>
+                <input class="field-input" id="reg-farm" type="number" placeholder="e.g. 2.5" min="0.1" step="0.5">
+              </div>
+            </div>
+            <div class="field-wrap">
+              <label class="field-label">Password</label>
+              <div class="field-inner">
+                <span class="field-icon">🔒</span>
+                <input class="field-input" id="reg-pass" type="password" placeholder="Minimum 6 characters">
+              </div>
+            </div>
+          </div>
+          <button class="btn-full" id="btn-register" onclick="doRegister()">
+            <span id="reg-txt">Create Account</span>
+            <div class="spinner" id="reg-spin"></div>
+          </button>
+          <div class="error-msg" id="reg-err"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 3: ONBOARDING
+═══════════════════════════════════════════ -->
+<div id="page-onboard" class="page">
+  <div class="onboard-wrap">
+    <div class="onboard-header">
+      <div class="onboard-logo">
+        <div class="onboard-logo-icon">🌾</div>
+        <span class="onboard-logo-text">KrishiAI</span>
+      </div>
+      <div class="step-indicator">
+        <div class="step-dot active" id="sdot-0"></div>
+        <div class="step-dot" id="sdot-1"></div>
+        <div class="step-dot" id="sdot-2"></div>
+      </div>
+    </div>
+
+    <div class="onboard-body">
+
+      <!-- STEP 1: Language -->
+      <div class="onboard-step active" id="step-0">
+        <div class="onboard-title">Choose Your Language</div>
+        <p class="onboard-sub">हम आपकी भाषा में बात करेंगे — We will talk in your language</p>
+        <div class="lang-grid" id="lang-grid">
+          <!-- JS renders these -->
+        </div>
+        <div class="onboard-footer">
+          <div style="font-size:13px;color:var(--txt-3);">Step 1 of 3</div>
+          <button class="btn-next" id="btn-lang-next" disabled onclick="gotoStep(1)">
+            Continue →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Crops -->
+      <div class="onboard-step" id="step-1">
+        <div class="onboard-title">Your Crops</div>
+        <p class="onboard-sub">Select all crops you grow — we'll personalise your advisory</p>
+        <div class="crop-grid" id="crop-grid">
+          <!-- JS renders these -->
+        </div>
+        <div style="font-size:13px;color:var(--txt-3);margin-bottom:20px;" id="crop-hint"></div>
+        <div class="onboard-footer">
+          <button class="btn-back" onclick="gotoStep(0)">← Back</button>
+          <button class="btn-next" id="btn-crop-next" disabled onclick="gotoStep(2)">
+            Continue →
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Location -->
+      <div class="onboard-step" id="step-2">
+        <div class="onboard-title">Allow Location Access</div>
+        <p class="onboard-sub">KrishiAI uses your location for accurate weather and farm-specific advice</p>
+        <div class="location-card">
+          <div class="location-icon">📍</div>
+          <div class="location-title">Share your farm's location</div>
+          <div class="location-desc">
+            We only read your location — never store or share it without your permission. Location powers hyper-local weather, soil data from ISRO satellites, and nearby mandi prices.
+          </div>
+          <button class="btn-location" onclick="requestLocation()">
+            📍 Allow Location Access
+          </button>
+          <div class="location-status" id="loc-status">Location not yet set</div>
+        </div>
+        <div class="onboard-footer">
+          <button class="btn-back" onclick="gotoStep(1)">← Back</button>
+          <button class="btn-next" id="btn-loc-next" onclick="finishOnboard()">
+            Go to Dashboard →
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════
+     PAGE 4: DASHBOARD
+═══════════════════════════════════════════ -->
+<div id="page-dash" class="page">
+  <div class="dash-wrap">
+
+    <!-- Nav -->
+    <nav class="dash-nav">
+      <div class="dash-logo">
+        <div class="dash-logo-icon">🌾</div>
+        <span class="dash-logo-text">KrishiAI</span>
+      </div>
+      <div class="dash-nav-right">
+        <div class="dash-crop-pill" id="dash-crop-tag">Loading crops…</div>
+        <div class="dash-user" id="dash-user-avatar" title="Profile">R</div>
+      </div>
+    </nav>
+
+    <div class="dash-body">
+
+      <!-- Offline banner -->
+      <div class="offline-banner" id="offline-banner">
+        ⚠️ No internet — showing cached data. Changes will sync when reconnected.
+      </div>
+
+      <!-- Greeting -->
+      <div class="greeting-row">
+        <div>
+          <div class="greeting-title" id="greeting-title">Good Morning, Farmer 👋</div>
+          <div class="greeting-sub" id="greeting-sub">Here's your farm overview for today</div>
+        </div>
+        <div class="greeting-tag" id="greeting-date"></div>
+      </div>
+
+      <!-- Main grid -->
+      <div class="dash-grid">
+
+        <!-- LEFT COLUMN -->
+        <div class="dash-col">
+
+          <!-- Weather card -->
+          <div class="d-card">
+            <div class="d-card-header">
+              <div class="d-card-title"><span class="d-card-icon">🌦️</span> Today's Weather</div>
+              <div class="d-card-badge badge-live" id="weather-loc-badge">Fetching…</div>
+            </div>
+            <div class="d-card-body" style="padding:0;">
+              <div id="weather-loading" class="weather-loading">
+                <div class="spinner active" style="width:28px;height:28px;border-color:var(--divider);border-top-color:var(--g-mid);"></div>
+                <div>Getting weather for your farm…</div>
+              </div>
+              <div id="weather-main" style="display:none;">
+                <div class="weather-main" style="margin:16px 16px 0;">
+                  <div class="weather-location">
+                    <span>📍</span>
+                    <span id="wt-location">—</span>
+                  </div>
+                  <div class="weather-top">
+                    <div>
+                      <div class="weather-temp" id="wt-temp">—<span class="weather-temp-unit">°C</span></div>
+                      <div class="weather-info">
+                        <div class="weather-desc" id="wt-desc">—</div>
+                        <div class="weather-feels">Feels like <span id="wt-feels">—</span>°C</div>
+                      </div>
+                    </div>
+                    <div class="weather-emoji" id="wt-emoji">—</div>
+                  </div>
+                  <div class="weather-stats">
+                    <div class="w-stat">
+                      <div class="w-stat-val" id="wt-humidity">—%</div>
+                      <div class="w-stat-lbl">Humidity</div>
+                    </div>
+                    <div class="w-stat">
+                      <div class="w-stat-val" id="wt-wind">— km/h</div>
+                      <div class="w-stat-lbl">Wind</div>
+                    </div>
+                    <div class="w-stat">
+                      <div class="w-stat-val" id="wt-rain">—mm</div>
+                      <div class="w-stat-lbl">Rain today</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 5-day forecast -->
+                <div class="forecast-strip" id="forecast-strip">
+                  <!-- JS renders -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Irrigation Advisory -->
+          <div class="d-card">
+            <div class="d-card-header">
+              <div class="d-card-title"><span class="d-card-icon">💧</span> Irrigation Advisory</div>
+              <div class="d-card-badge badge-ai">AI Advice</div>
+            </div>
+            <div class="d-card-body">
+              <div id="irr-loading" style="display:flex;align-items:center;gap:10px;color:var(--txt-3);font-size:14px;">
+                <div class="skel" style="width:100%;height:100px;"></div>
+              </div>
+              <div id="irr-content" style="display:none;">
+                <div class="irr-card" id="irr-card">
+                  <div class="irr-icon" id="irr-icon">💧</div>
+                  <div class="irr-verdict" id="irr-verdict">Loading…</div>
+                  <div class="irr-reason" id="irr-reason">Fetching your advisory…</div>
+                  <div class="irr-savings" id="irr-savings" style="display:none;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Advisory -->
+          <div class="advisory-box">
+            <div class="advisory-head">
+              <div class="advisory-badge">🤖 KrishiAI Advisory</div>
+            </div>
+            <div class="advisory-text" id="advisory-text">
+              Generating personalised farming advice for your crops and region…
+            </div>
+            <button class="advisory-btn" onclick="openChat()">Ask a question →</button>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="dash-col">
+
+          <!-- Soil data mini -->
+          <div class="d-card">
+            <div class="d-card-header">
+              <div class="d-card-title"><span class="d-card-icon">🌱</span> Soil Status</div>
+              <div class="d-card-badge badge-live">Sensor</div>
+            </div>
+            <div class="d-card-body">
+              <div class="soil-strip">
+                <div class="soil-item">
+                  <div class="soil-label">Soil Moisture</div>
+                  <div class="soil-bar-wrap"><div class="soil-bar moisture" id="bar-moisture" style="width:65%"></div></div>
+                  <div><span class="soil-val" id="val-moisture">65</span><span class="soil-unit">%</span></div>
+                </div>
+                <div class="soil-item">
+                  <div class="soil-label">Temperature</div>
+                  <div class="soil-bar-wrap"><div class="soil-bar temp" id="bar-temp" style="width:70%"></div></div>
+                  <div><span class="soil-val" id="val-temp">28</span><span class="soil-unit">°C</span></div>
+                </div>
+                <div class="soil-item">
+                  <div class="soil-label">Nitrogen (N)</div>
+                  <div class="soil-bar-wrap"><div class="soil-bar n" id="bar-n" style="width:45%"></div></div>
+                  <div><span class="soil-val" id="val-n">25</span><span class="soil-unit">mg/kg</span></div>
+                </div>
+                <div class="soil-item">
+                  <div class="soil-label">Humidity</div>
+                  <div class="soil-bar-wrap"><div class="soil-bar ph" id="bar-h" style="width:58%"></div></div>
+                  <div><span class="soil-val" id="val-h">58</span><span class="soil-unit">%</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="d-card">
+            <div class="d-card-header">
+              <div class="d-card-title"><span class="d-card-icon">⚡</span> Quick Actions</div>
+            </div>
+            <div class="d-card-body">
+              <div class="quick-actions">
+                <button class="qa-btn" onclick="alert('Disease detection: Upload a leaf photo here — connects to /api/v1/pest-detect')">
+                  <div class="qa-icon">🔬</div>
+                  <div class="qa-label">Diagnose Plant</div>
+                  <div class="qa-sub">Photo → AI disease check</div>
+                </button>
+                <button class="qa-btn" onclick="alert('Market prices: Connects to /api/v1/mandi-prices')">
+                  <div class="qa-icon">📈</div>
+                  <div class="qa-label">Mandi Prices</div>
+                  <div class="qa-sub">Live nearby rates</div>
+                </button>
+                <button class="qa-btn" onclick="openChat()">
+                  <div class="qa-icon">🤖</div>
+                  <div class="qa-label">Ask KrishiAI</div>
+                  <div class="qa-sub">Chat in your language</div>
+                </button>
+                <button class="qa-btn" onclick="alert('Yield forecast: Connects to /api/v1/yield-forecast')">
+                  <div class="qa-icon">🌾</div>
+                  <div class="qa-label">Yield Forecast</div>
+                  <div class="qa-sub">Season prediction</div>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Schemes -->
+          <div class="d-card">
+            <div class="d-card-header">
+              <div class="d-card-title"><span class="d-card-icon">🏛️</span> Govt Schemes</div>
+            </div>
+            <div class="d-card-body" style="display:flex;flex-direction:column;gap:10px;">
+              <div style="background:var(--g-tint);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--g-pale);">
+                <div style="font-size:13px;font-weight:600;color:var(--g-dark);margin-bottom:2px;">PM-KISAN</div>
+                <div style="font-size:12px;color:var(--g-mid);">₹6,000/year direct income support</div>
+              </div>
+              <div style="background:var(--gold-pale);border-radius:var(--radius-sm);padding:12px;border:1px solid rgba(201,144,16,.2);">
+                <div style="font-size:13px;font-weight:600;color:var(--b-dark);margin-bottom:2px;">Fasal Bima Yojana</div>
+                <div style="font-size:12px;color:var(--gold);">Crop insurance at minimal cost</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+const BASE = 'http://localhost:8000/api/v1';
+let token = '', farmerId = '', farmerName = 'Farmer';
+let selectedLang = '', selectedCrops = [];
+let userLat = null, userLng = null;
+
+const LANGUAGES = [
+  {code:'hi',  native:'हिंदी',    name:'Hindi'},
+  {code:'en',  native:'English',  name:'English'},
+  {code:'pa',  native:'ਪੰਜਾਬੀ',   name:'Punjabi'},
+  {code:'gu',  native:'ગુજરાતી',  name:'Gujarati'},
+  {code:'mr',  native:'मराठी',    name:'Marathi'},
+  {code:'ta',  native:'தமிழ்',    name:'Tamil'},
+  {code:'te',  native:'తెలుగు',   name:'Telugu'},
+  {code:'kn',  native:'ಕನ್ನಡ',    name:'Kannada'},
+  {code:'ml',  native:'മലയാളം',   name:'Malayalam'},
+  {code:'bn',  native:'বাংলা',    name:'Bengali'},
+  {code:'or',  native:'ଓଡ଼ିଆ',    name:'Odia'},
+  {code:'mwr', native:'मारवाड़ी',  name:'Marwadi'},
+];
+
+const CROPS = [
+  {key:'wheat',    emoji:'🌾', name:'Wheat'},
+  {key:'rice',     emoji:'🍚', name:'Rice'},
+  {key:'cotton',   emoji:'🌸', name:'Cotton'},
+  {key:'sugarcane',emoji:'🎋', name:'Sugarcane'},
+  {key:'maize',    emoji:'🌽', name:'Maize'},
+  {key:'mustard',  emoji:'🌼', name:'Mustard'},
+  {key:'soybean',  emoji:'🫘', name:'Soybean'},
+  {key:'tomato',   emoji:'🍅', name:'Tomato'},
+  {key:'potato',   emoji:'🥔', name:'Potato'},
+  {key:'onion',    emoji:'🧅', name:'Onion'},
+  {key:'chilli',   emoji:'🌶️', name:'Chilli'},
+  {key:'mango',    emoji:'🥭', name:'Mango'},
+];
+
+// Weather emoji map
+const weatherEmoji = (code) => {
+  if (!code) return '🌤️';
+  if (code <= 3)  return '☀️';
+  if (code <= 48) return '🌫️';
+  if (code <= 67) return '🌧️';
+  if (code <= 77) return '🌨️';
+  if (code <= 82) return '🌦️';
+  return '⛈️';
+};
+const weatherDesc = (code) => {
+  if (!code) return 'Clear';
+  if (code <= 1)  return 'Clear sky';
+  if (code <= 3)  return 'Partly cloudy';
+  if (code <= 48) return 'Foggy';
+  if (code <= 55) return 'Drizzle';
+  if (code <= 67) return 'Rainy';
+  if (code <= 77) return 'Snow';
+  if (code <= 82) return 'Rain showers';
+  return 'Thunderstorm';
+};
+const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+// ── PAGE NAV ──────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function showAuth() { showPage('page-auth'); }
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 10);
+}, {passive: true});
+
+// ── AUTH TABS ─────────────────────────────────────────
+function switchTab(tab) {
+  const isLogin = tab === 'login';
+  document.getElementById('tab-login').classList.toggle('active', isLogin);
+  document.getElementById('tab-register').classList.toggle('active', !isLogin);
+  document.getElementById('form-login').style.display = isLogin ? 'block' : 'none';
+  document.getElementById('form-register').style.display = isLogin ? 'none' : 'block';
+}
+
+// ── LOGIN ─────────────────────────────────────────────
+async function doLogin() {
+  const phone = document.getElementById('login-phone').value.trim();
+  const pass  = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-err');
+  errEl.classList.remove('show');
+
+  if (phone.length !== 10) { showErr(errEl, 'Enter a valid 10-digit phone number'); return; }
+  if (!pass) { showErr(errEl, 'Password is required'); return; }
+
+  setLoading('login', true);
+
+  // Try real API
+  try {
+    const res = await fetch(`${BASE}/auth/login`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({phone, password: pass})
+    });
+    const data = await res.json();
+    if (data.success) {
+      token = data.data.token;
+      farmerId = data.data.farmer_id;
+      farmerName = data.data.name || 'Farmer';
+      startOnboarding();
+    } else {
+      showErr(errEl, data.detail || 'Invalid phone or password');
+    }
+  } catch {
+    // Offline demo mode
+    token = 'demo-token';
+    farmerId = 'demo-farmer';
+    farmerName = phone.endsWith('0000') ? 'Ramesh Kumar' : 'Demo Farmer';
+    startOnboarding();
+  } finally {
+    setLoading('login', false);
+  }
+}
+
+// ── REGISTER ──────────────────────────────────────────
+async function doRegister() {
+  const name     = document.getElementById('reg-name').value.trim();
+  const phone    = document.getElementById('reg-phone').value.trim();
+  const state    = document.getElementById('reg-state').value.trim();
+  const district = document.getElementById('reg-district').value.trim();
+  const farm     = parseFloat(document.getElementById('reg-farm').value);
+  const pass     = document.getElementById('reg-pass').value;
+  const errEl    = document.getElementById('reg-err');
+  errEl.classList.remove('show');
+
+  if (!name) { showErr(errEl, 'Enter your name'); return; }
+  if (phone.length !== 10) { showErr(errEl, 'Enter a valid 10-digit phone number'); return; }
+  if (!state) { showErr(errEl, 'Enter your state'); return; }
+  if (!district) { showErr(errEl, 'Enter your district'); return; }
+  if (!farm || farm <= 0) { showErr(errEl, 'Enter valid farm size'); return; }
+  if (pass.length < 6) { showErr(errEl, 'Password must be at least 6 characters'); return; }
+
+  setLoading('register', true);
+
+  try {
+    const res = await fetch(`${BASE}/auth/register`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({phone, password: pass, name, state, district, farm_size_hectares: farm, preferred_language: 'hi'})
+    });
+    const data = await res.json();
+    if (data.success) {
+      token = data.data.token;
+      farmerId = data.data.farmer_id;
+      farmerName = name;
+      startOnboarding();
+    } else {
+      showErr(errEl, data.detail || 'Registration failed. Try again.');
+    }
+  } catch {
+    token = 'demo-token';
+    farmerId = 'demo-farmer';
+    farmerName = name;
+    startOnboarding();
+  } finally {
+    setLoading('register', false);
+  }
+}
+
+function showErr(el, msg) { el.textContent = msg; el.classList.add('show'); }
+function setLoading(form, on) {
+  const btn = document.getElementById(`btn-${form === 'register' ? 'register' : 'login'}`);
+  const spin = document.getElementById(`${form === 'register' ? 'reg' : 'login'}-spin`);
+  const txt  = document.getElementById(`${form === 'register' ? 'reg' : 'login'}-txt`);
+  btn.disabled = on;
+  spin.classList.toggle('active', on);
+  txt.style.display = on ? 'none' : 'inline';
+}
+
+// ── ONBOARDING ────────────────────────────────────────
+function startOnboarding() {
+  buildLangGrid();
+  buildCropGrid();
+  showPage('page-onboard');
+}
+
+function buildLangGrid() {
+  const grid = document.getElementById('lang-grid');
+  grid.innerHTML = LANGUAGES.map(l => `
+    <div class="lang-card" data-code="${l.code}" onclick="selectLang('${l.code}',this)">
+      <div class="lang-native">${l.native}</div>
+      <div class="lang-name">${l.name}</div>
+    </div>
+  `).join('');
+}
+
+function selectLang(code, el) {
+  document.querySelectorAll('.lang-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedLang = code;
+  document.getElementById('btn-lang-next').disabled = false;
+}
+
+function buildCropGrid() {
+  const grid = document.getElementById('crop-grid');
+  grid.innerHTML = CROPS.map(c => `
+    <div class="crop-card" data-key="${c.key}" onclick="toggleCrop('${c.key}',this)">
+      <div class="crop-emoji">${c.emoji}</div>
+      <div class="crop-name">${c.name}</div>
+    </div>
+  `).join('');
+}
+
+function toggleCrop(key, el) {
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) {
+    selectedCrops.push(key);
+  } else {
+    selectedCrops = selectedCrops.filter(c => c !== key);
+  }
+  document.getElementById('btn-crop-next').disabled = selectedCrops.length === 0;
+  document.getElementById('crop-hint').textContent =
+    selectedCrops.length > 0 ? `${selectedCrops.length} crop${selectedCrops.length > 1 ? 's' : ''} selected` : '';
+}
+
+let currentStep = 0;
+function gotoStep(n) {
+  document.getElementById(`step-${currentStep}`).classList.remove('active');
+  document.getElementById(`sdot-${currentStep}`).classList.remove('active');
+  document.getElementById(`sdot-${currentStep}`).classList.add('done');
+  currentStep = n;
+  document.getElementById(`step-${n}`).classList.add('active');
+  document.getElementById(`sdot-${n}`).classList.add('active');
+}
+
+function requestLocation() {
+  const status = document.getElementById('loc-status');
+  if (!navigator.geolocation) {
+    status.textContent = '⚠️ Geolocation not supported by your browser';
+    return;
+  }
+  status.textContent = '📡 Getting your location…';
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+      status.textContent = `✅ Location found: ${userLat.toFixed(3)}°N, ${userLng.toFixed(3)}°E`;
+      status.classList.add('got');
+    },
+    err => {
+      // Fallback to Delhi for demo
+      userLat = 28.6139; userLng = 77.2090;
+      status.textContent = '📍 Using default location (Delhi) for demo';
+      status.classList.add('got');
+    },
+    {timeout: 8000}
+  );
+}
+
+async function finishOnboard() {
+  // Save crops to profile if we have a real token
+  if (token !== 'demo-token') {
+    try {
+      await fetch(`${BASE}/farmers/profile`, {
+        method: 'PUT',
+        headers: {'Content-Type':'application/json', 'Authorization':`Bearer ${token}`},
+        body: JSON.stringify({
+          crops_growing: selectedCrops,
+          preferred_language: selectedLang,
+          location_lat: userLat,
+          location_lng: userLng
+        })
+      });
+    } catch {}
+  }
+  buildDashboard();
+  showPage('page-dash');
+}
+
+// ── DASHBOARD ─────────────────────────────────────────
+function buildDashboard() {
+  // Greeting
+  const h = new Date().getHours();
+  const greet = h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
+  document.getElementById('greeting-title').textContent = `${greet}, ${farmerName} 👋`;
+  document.getElementById('greeting-sub').textContent = 'Here is your farm overview for today';
+
+  // Date badge
+  const now = new Date();
+  document.getElementById('greeting-date').textContent =
+    now.toLocaleDateString('en-IN', {weekday:'short', day:'numeric', month:'short'});
+
+  // User avatar initial
+  document.getElementById('dash-user-avatar').textContent = farmerName[0].toUpperCase();
+
+  // Crop tag
+  document.getElementById('dash-crop-tag').textContent =
+    selectedCrops.length > 0
+      ? selectedCrops.slice(0, 2).map(c => CROPS.find(x => x.key === c)?.emoji + ' ' + c).join(', ')
+      : '🌾 Mixed crops';
+
+  // Offline check
+  if (!navigator.onLine) {
+    document.getElementById('offline-banner').classList.add('show');
+  }
+
+  fetchWeather();
+  generateAdvisory();
+}
+
+// ── WEATHER ───────────────────────────────────────────
+async function fetchWeather() {
+  const lat = userLat || 28.6139;
+  const lng = userLng || 77.2090;
+
+  // Try backend first, then fall back to Open-Meteo (free, no key)
+  try {
+    const res = await fetch(`${BASE}/weather`, {
+      headers: {'Authorization': `Bearer ${token}`}
+    });
+    const d = await res.json();
+    if (d.success) {
+      renderWeather(d.data, lat, lng);
+      return;
+    }
+  } catch {}
+
+  // Direct Open-Meteo API (free, no key needed)
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}` +
+      `&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,precipitation` +
+      `&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=Asia%2FKolkata&forecast_days=5`;
+    const res = await fetch(url);
+    const raw = await res.json();
+    renderOpenMeteoWeather(raw, lat, lng);
+  } catch {
+    renderMockWeather(lat, lng);
+  }
+}
+
+function renderOpenMeteoWeather(raw, lat, lng) {
+  const c = raw.current;
+  const d = raw.daily;
+
+  // Location name from coords
+  reverseGeocode(lat, lng).then(loc => {
+    document.getElementById('wt-location').textContent = loc;
+    document.getElementById('weather-loc-badge').textContent = loc;
+  });
+
+  document.getElementById('wt-temp').innerHTML = `${Math.round(c.temperature_2m)}<span class="weather-temp-unit">°C</span>`;
+  document.getElementById('wt-desc').textContent = weatherDesc(c.weather_code);
+  document.getElementById('wt-feels').textContent = Math.round(c.apparent_temperature);
+  document.getElementById('wt-humidity').textContent = `${Math.round(c.relative_humidity_2m)}%`;
+  document.getElementById('wt-wind').textContent = `${Math.round(c.wind_speed_10m)} km/h`;
+  document.getElementById('wt-rain').textContent = `${c.precipitation ?? 0}mm`;
+  document.getElementById('wt-emoji').textContent = weatherEmoji(c.weather_code);
+
+  // Forecast
+  const forecastEl = document.getElementById('forecast-strip');
+  const today = new Date();
+  forecastEl.innerHTML = d.time.map((t, i) => {
+    const date = new Date(t);
+    const isToday = i === 0;
+    return `
+      <div class="forecast-pill ${isToday ? 'today' : ''}">
+        <div class="forecast-day">${isToday ? 'Today' : days[date.getDay()]}</div>
+        <div class="forecast-emoji">${weatherEmoji(d.weather_code[i])}</div>
+        <div class="forecast-temp">${Math.round(d.temperature_2m_max[i])}°/${Math.round(d.temperature_2m_min[i])}°</div>
+        <div class="forecast-rain">${d.precipitation_sum[i] > 0 ? d.precipitation_sum[i].toFixed(1)+'mm' : ''}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Irrigation decision
+  const rain24h = d.precipitation_sum.slice(0,2).reduce((a,b) => a+b, 0);
+  const humidity = c.relative_humidity_2m;
+  const moisture = 65; // sensor mock
+  renderIrrigation(c.temperature_2m, humidity, rain24h, moisture, c.weather_code);
+
+  document.getElementById('weather-loading').style.display = 'none';
+  document.getElementById('weather-main').style.display = 'block';
+  document.getElementById('irr-loading').style.display = 'none';
+  document.getElementById('irr-content').style.display = 'block';
+}
+
+async function reverseGeocode(lat, lng) {
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+    const d = await res.json();
+    const a = d.address;
+    return [a.village || a.city || a.town || a.county, a.state].filter(Boolean).join(', ');
+  } catch {
+    return `${lat.toFixed(2)}°N, ${lng.toFixed(2)}°E`;
+  }
+}
+
+function renderMockWeather(lat, lng) {
+  document.getElementById('wt-location').textContent = 'Your Farm Location';
+  document.getElementById('weather-loc-badge').textContent = 'Demo';
+  document.getElementById('wt-temp').innerHTML = `32<span class="weather-temp-unit">°C</span>`;
+  document.getElementById('wt-desc').textContent = 'Partly Cloudy';
+  document.getElementById('wt-feels').textContent = '34';
+  document.getElementById('wt-humidity').textContent = '58%';
+  document.getElementById('wt-wind').textContent = '12 km/h';
+  document.getElementById('wt-rain').textContent = '0mm';
+  document.getElementById('wt-emoji').textContent = '🌤️';
+  const forecasts = [
+    {d:'Today',e:'🌤️',h:'32',l:'22',r:''},
+    {d:'Tue',e:'🌧️',h:'28',l:'20',r:'4mm'},
+    {d:'Wed',e:'🌦️',h:'30',l:'21',r:'1mm'},
+    {d:'Thu',e:'☀️',h:'35',l:'24',r:''},
+    {d:'Fri',e:'☀️',h:'36',l:'25',r:''},
+  ];
+  document.getElementById('forecast-strip').innerHTML = forecasts.map((f,i) => `
+    <div class="forecast-pill ${i===0?'today':''}">
+      <div class="forecast-day">${f.d}</div>
+      <div class="forecast-emoji">${f.e}</div>
+      <div class="forecast-temp">${f.h}°/${f.l}°</div>
+      <div class="forecast-rain">${f.r}</div>
+    </div>
+  `).join('');
+  renderIrrigation(32, 58, 0, 65, 2);
+  document.getElementById('weather-loading').style.display = 'none';
+  document.getElementById('weather-main').style.display = 'block';
+  document.getElementById('irr-loading').style.display = 'none';
+  document.getElementById('irr-content').style.display = 'block';
+}
+
+function renderWeather(data, lat, lng) {
+  // Adapt backend response format
+  const current = data.current || {};
+  document.getElementById('wt-location').textContent = data.location || 'Your Farm';
+  document.getElementById('weather-loc-badge').textContent = data.location || 'Live';
+  document.getElementById('wt-temp').innerHTML = `${Math.round(current.temp || 32)}<span class="weather-temp-unit">°C</span>`;
+  document.getElementById('wt-desc').textContent = current.description || 'Partly Cloudy';
+  document.getElementById('wt-feels').textContent = Math.round(current.feels_like || 34);
+  document.getElementById('wt-humidity').textContent = `${current.humidity || 58}%`;
+  document.getElementById('wt-wind').textContent = `${current.wind_speed || 12} km/h`;
+  document.getElementById('wt-rain').textContent = `${current.rain || 0}mm`;
+  document.getElementById('wt-emoji').textContent = '🌤️';
+
+  const forecast = data.forecast || [];
+  document.getElementById('forecast-strip').innerHTML = forecast.map((f,i) => `
+    <div class="forecast-pill ${i===0?'today':''}">
+      <div class="forecast-day">${f.day || days[i]}</div>
+      <div class="forecast-emoji">🌤️</div>
+      <div class="forecast-temp">${f.temp_max}°/${f.temp_min}°</div>
+      <div class="forecast-rain">${f.rain_mm > 0 ? f.rain_mm+'mm' : ''}</div>
+    </div>
+  `).join('');
+
+  const rain = forecast.slice(0,2).reduce((a,f) => a + (f.rain_mm||0), 0);
+  renderIrrigation(current.temp, current.humidity, rain, 65, null);
+  document.getElementById('weather-loading').style.display = 'none';
+  document.getElementById('weather-main').style.display = 'block';
+  document.getElementById('irr-loading').style.display = 'none';
+  document.getElementById('irr-content').style.display = 'block';
+}
+
+// ── IRRIGATION LOGIC ──────────────────────────────────
+function renderIrrigation(temp, humidity, rain48h, soilMoisture, weatherCode) {
+  const card = document.getElementById('irr-card');
+  const icon = document.getElementById('irr-icon');
+  const verdict = document.getElementById('irr-verdict');
+  const reason = document.getElementById('irr-reason');
+  const savings = document.getElementById('irr-savings');
+
+  // Decision logic
+  let shouldWater = true;
+  let reasons = [];
+  let savedML = 0;
+
+  if (rain48h >= 5) {
+    shouldWater = false;
+    reasons.push(`rain of ${rain48h.toFixed(1)}mm expected in next 48h`);
+    savedML = 600;
+  }
+  if (soilMoisture >= 70) {
+    shouldWater = false;
+    reasons.push(`soil moisture is already high at ${soilMoisture}%`);
+  }
+  if (humidity >= 80) {
+    shouldWater = false;
+    reasons.push(`high humidity (${humidity}%) reduces evaporation`);
+  }
+  if (weatherCode >= 51 && weatherCode <= 82) {
+    shouldWater = false;
+    reasons.push('rain detected or forecast');
+    savedML = 600;
+  }
+  if (temp > 38) {
+    shouldWater = true;
+    reasons = ['high temperature — crops need hydration'];
+  }
+
+  if (shouldWater) {
+    card.className = 'irr-card yes';
+    icon.textContent = '💧';
+    verdict.textContent = 'Water your crops today';
+    reason.textContent = `Best time: early morning (5–7 AM) or evening (6–8 PM). ${
+      soilMoisture < 40 ? `Soil moisture is low at ${soilMoisture}% — irrigate thoroughly.` :
+      'Soil moisture is moderate — light irrigation sufficient.'
+    } ${selectedCrops.length > 0 ? 'Crops: ' + selectedCrops.slice(0,2).join(', ') + '.' : ''}`;
+    savings.style.display = 'none';
+  } else {
+    card.className = 'irr-card no';
+    icon.textContent = '🚫';
+    verdict.textContent = 'Skip irrigation today';
+    reason.textContent = `No watering needed — ${reasons.join(' and ')}. Your crop is well-supplied. Check again tomorrow.`;
+    if (savedML > 0) {
+      savings.style.display = 'flex';
+      savings.textContent = `💧 Saves ~${savedML}L water by skipping`;
+    }
+  }
+}
+
+// ── AI ADVISORY ───────────────────────────────────────
+async function generateAdvisory() {
+  const advisoryEl = document.getElementById('advisory-text');
+  const crop = selectedCrops.length > 0 ? selectedCrops[0] : 'mixed crops';
+
+  // Try backend advisory
+  if (token !== 'demo-token') {
+    try {
+      const res = await fetch(`${BASE}/irrigation-advisory`, {
+        headers: {'Authorization': `Bearer ${token}`}
+      });
+      const d = await res.json();
+      if (d.success && d.data.advisory) {
+        advisoryEl.textContent = d.data.advisory;
+        return;
+      }
+    } catch {}
+  }
+
+  // Smart local advisory
+  const h = new Date().getHours();
+  const timeCtx = h < 8 ? 'morning spray window is open' : h < 18 ? 'midday — avoid spraying in heat' : 'evening is ideal for light watering';
+  advisoryEl.textContent =
+    `Good ${h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening'}! For your ${crop} farm: ${timeCtx}. ` +
+    `Soil moisture is at 65% — within optimal range. Watch nitrogen levels — consider light urea application in 3–5 days. ` +
+    `Market prices for ${crop} are trending stable this week. Tap "Ask KrishiAI" to ask anything in your language.`;
+}
+
+function openChat() {
+  alert('Chat feature: Connects to POST /api/v1/chat with your language preference. Supports voice input via POST /api/v1/voice-chat');
+}
+
+// ── ONLINE/OFFLINE EVENTS ────────────────────────────
+window.addEventListener('online', () => {
+  document.getElementById('offline-banner').classList.remove('show');
+  fetchWeather();
+});
+window.addEventListener('offline', () => {
+  document.getElementById('offline-banner').classList.add('show');
+});
+</script>
+</body>
+</html>
